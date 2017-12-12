@@ -20,12 +20,16 @@ polo = poloniex.Poloniex()
 #     |      "Start" and "end" are given in UNIX timestamp format and used to
 #     |      specify the date range for the data returned.
 # 86400 = 24 hours
-doge = pandas.DataFrame(polo.returnChartData("BTC_DOGE", 86400))
+
+#doge = pandas.DataFrame(polo.returnChartData("BTC_DOGE", 86400))
+btc = pandas.DataFrame(polo.returnChartData("USDT_BTC", 86400))
 
 #%% View Data
-doge.plot(x = "date", y = "open")
-doge.plot(x = "date", y = "volume")
+#doge.plot(x = "date", y = "open")
+#doge.plot(x = "date", y = "volume")
 
+btc.plot(x = "date", y = "open")
+btc.plot(x = "date", y = "volume")
 #%%
 help(poloniex.poloniex)
 
@@ -34,9 +38,9 @@ help(poloniex.poloniex)
 import datetime
 
 print("Start date")
-print(datetime.datetime.fromtimestamp(doge["date"][0]))
+print(datetime.datetime.fromtimestamp(btc["date"][0]))
 print("End date")
-print(datetime.datetime.fromtimestamp(doge["date"][len(doge)-1]))
+print(datetime.datetime.fromtimestamp(btc["date"][len(btc)-1]))
 
 #%%
 #doge2 = doge
@@ -45,14 +49,20 @@ print(datetime.datetime.fromtimestamp(doge["date"][len(doge)-1]))
 #   doge2["date"][i] = datetime.datetime.fromtimestamp(doge["date"][i])
 
 # doge2["date"][1415] = datetime.datetime.fromtimestamp(doge["date"][1415])
-#%%
-# print(doge2["date"])
+
+btc2 = btc
+
+for i in range(len(btc2)):
+   btc2["date"][i] = datetime.datetime.fromtimestamp(btc["date"][i])
 
 #%%
-# doge2.plot(x = "date", y = "volume")
+print(btc2["date"])
 
 #%%
+btc2.plot(x = "date", y = "open")
 
+#%%
+btc
 
 
 #%%
