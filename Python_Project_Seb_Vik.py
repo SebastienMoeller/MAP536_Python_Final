@@ -11,6 +11,7 @@ Created on Tue Dec  5 22:43:35 2017
 # pip install poloniex
 import poloniex
 import pandas
+#help(poloniex.poloniex)
 
 # We are using the public data so no keys are needed
 polo = poloniex.Poloniex()
@@ -24,16 +25,6 @@ polo = poloniex.Poloniex()
 #doge = pandas.DataFrame(polo.returnChartData("BTC_DOGE", 86400))
 btc = pandas.DataFrame(polo.returnChartData("USDT_BTC", 86400))
 
-#%% View Data
-#doge.plot(x = "date", y = "open")
-#doge.plot(x = "date", y = "volume")
-
-btc.plot(x = "date", y = "open")
-btc.plot(x = "date", y = "volume")
-#%%
-help(poloniex.poloniex)
-
-
 #%%
 import datetime
 
@@ -42,32 +33,114 @@ print(datetime.datetime.fromtimestamp(btc["date"][0]))
 print("End date")
 print(datetime.datetime.fromtimestamp(btc["date"][len(btc)-1]))
 
-#%%
-#doge2 = doge
-
-#for i in range(len(doge)):
-#   doge2["date"][i] = datetime.datetime.fromtimestamp(doge["date"][i])
-
-# doge2["date"][1415] = datetime.datetime.fromtimestamp(doge["date"][1415])
-
 btc2 = btc
 
 for i in range(len(btc2)):
    btc2["date"][i] = datetime.datetime.fromtimestamp(btc["date"][i])
 
 #%%
-print(btc2["date"])
+btc2.columns
 
 #%%
-btc2.plot(x = "date", y = "open")
+btc2.describe()
 
 #%%
-btc
+btc.dtypes
+
+#%%
+import sys
+sys.getsizeof(btc2)
+
+#%% View Data
+import matplotlib.pyplot as plt
+
+fig = plt.figure()
+
+axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
+axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
+
+# main figure
+axes1.plot(btc2["date"], btc2["volume"]/btc2["volume"].max(), "#258BFF")
+axes1.plot(btc2["date"], btc2["close"]/btc2["close"].max(), '#EBA911')
+axes1.plot(btc2["date"], btc2["open"]/btc2["open"].max(), '#0CC88F')
+
+axes1.legend(loc=2)
+axes1.set_xlabel('date')
+axes1.set_ylabel('Max')
+axes1.set_title('Last Three Years')
+
+# insert
+axes2.plot(btc2["date"][-30:], btc2["volume"][-30:]/btc2["volume"][-30:].max(), '#258BFF')
+axes2.plot(btc2["date"][-30:], btc2["close"][-30:]/btc2["close"][-30:].max(), '#EBA911')
+axes2.plot(btc2["date"][-30:], btc2["open"][-30:]/btc2["open"][-30:].max(), '#0CC88F')
+
+axes2.set_xlabel('date')
+axes2.set_ylabel('Max')
+axes2.set_title('Last 30 Days');
+#%%
+
+
+
+
+
+
+
+
+#%% GOOGLE TRENDS
+from pytrends.request import TrendReq
+
+pytrends = TrendReq(hl='en-US', tz=360)
+
+
+#%%
+kw_list = ["Blockchain", "BTC", "BitCoin"]
+pytrends.build_payload(kw_list)
+
+#%%
+kw_list
+
+#%%
+trends = pytrends.interest_over_time()
+
+#%%
+trends.plot()
 
 
 #%%
 
+#%%
 
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
 
 
 
