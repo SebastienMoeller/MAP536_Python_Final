@@ -60,9 +60,8 @@ axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
 axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
 
 # main figure
-axes1.plot(btc2["date"], btc2["volume"]/btc2["volume"].max(), "#258BFF")
+axes1.plot(btc2["date"], btc2["volume"]/btc2["volume"].max(), "#0CC88F")
 axes1.plot(btc2["date"], btc2["close"]/btc2["close"].max(), '#EBA911')
-axes1.plot(btc2["date"], btc2["open"]/btc2["open"].max(), '#0CC88F')
 
 axes1.legend(loc=2)
 axes1.set_xlabel('date')
@@ -70,9 +69,8 @@ axes1.set_ylabel('Max')
 axes1.set_title('Last Three Years')
 
 # insert
-axes2.plot(btc2["date"][-30:], btc2["volume"][-30:]/btc2["volume"][-30:].max(), '#258BFF')
+axes2.plot(btc2["date"][-30:], btc2["volume"][-30:]/btc2["volume"][-30:].max(), '#0CC88F')
 axes2.plot(btc2["date"][-30:], btc2["close"][-30:]/btc2["close"][-30:].max(), '#EBA911')
-axes2.plot(btc2["date"][-30:], btc2["open"][-30:]/btc2["open"][-30:].max(), '#0CC88F')
 
 axes2.set_xlabel('date')
 axes2.set_ylabel('Max')
@@ -97,23 +95,53 @@ kw_list = ["Blockchain", "BTC", "BitCoin"]
 pytrends.build_payload(kw_list)
 
 #%%
-kw_list
-
-#%%
 trends = pytrends.interest_over_time()
 
 #%%
-trends.plot()
-
-
-#%%
+trends.columns
 
 #%%
+trends.describe()
 
 #%%
+trends.dtypes
 
 #%%
+pytrends = TrendReq(hl='en-US', tz=360)
 
+pytrends.build_payload(["Blockchain"])
+tblockchain = pytrends.interest_over_time()
+pytrends.build_payload(["BTC"])
+tbtc = pytrends.interest_over_time()
+pytrends.build_payload(["BitCoin"])
+tbitcoin = pytrends.interest_over_time()
+
+#%%
+import matplotlib.pyplot as plt
+
+fig = plt.figure()
+
+axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
+axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
+
+# main figure
+axes1.plot(tbitcoin["BitCoin"]/tbitcoin["BitCoin"].max())
+axes1.plot(tblockchain["Blockchain"]/tblockchain["Blockchain"].max())
+axes1.plot(tbtc["BTC"]/tbtc["BTC"].max())
+
+axes1.legend(loc=2)
+axes1.set_xlabel('date')
+axes1.set_ylabel('Max')
+axes1.set_title('Last Five Years')
+
+# insert
+axes2.plot(tbitcoin["BitCoin"][-30:]/tbitcoin["BitCoin"][-30:].max())
+axes2.plot(tblockchain["Blockchain"][-30:]/tblockchain["Blockchain"][-30:].max())
+axes2.plot(tbtc["BTC"][-30:]/tbtc["BTC"][-30:].max())
+
+axes2.set_xlabel('date')
+axes2.set_ylabel('Max')
+axes2.set_title('Last 30 Days');
 #%%
 
 #%%
