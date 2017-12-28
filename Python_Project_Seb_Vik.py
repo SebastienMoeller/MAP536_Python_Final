@@ -12,6 +12,7 @@ import pandas
 import matplotlib.pyplot as plt
 import datetime
 from pytrends.request import TrendReq
+import numpy
 #%% Importing from API
 # To import poloniex we need to install the package in the console using:
 # pip install poloniex
@@ -134,7 +135,26 @@ axes2.set_ylabel('Max')
 axes2.set_title('Last 30 Days');
 #%%
 
+
+
+
+
+
+#%% Does the daily change follow a normal distribution?
+closeDiff = pandas.DataFrame(numpy.diff(btc2["close"]))
 #%%
+closeDiff.plot()
+#%%
+closeDiff[0:650].plot()
+#%%
+closeDiff[650:1000].plot()
+#%%
+closeDiff[1000:].plot()
+#%%
+plt.hist(closeDiff[850:], bins = 30)
+#%%
+
+
 
 #%%
 
