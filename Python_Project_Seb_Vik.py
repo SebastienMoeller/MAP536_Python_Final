@@ -6,12 +6,16 @@ Created on Tue Dec  5 22:43:35 2017
 @author: Sebastien
 """
 
+#%% All libraries
+import poloniex
+import pandas
+import matplotlib.pyplot as plt
+import datetime
+from pytrends.request import TrendReq
 #%% Importing from API
 # To import poloniex we need to install the package in the console using:
 # pip install poloniex
-import poloniex
-import pandas
-#help(poloniex.poloniex)
+# help(poloniex.poloniex)
 
 # We are using the public data so no keys are needed
 polo = poloniex.Poloniex()
@@ -26,8 +30,6 @@ polo = poloniex.Poloniex()
 btc = pandas.DataFrame(polo.returnChartData("USDT_BTC", 86400))
 
 #%%
-import datetime
-
 print("Start date")
 print(datetime.datetime.fromtimestamp(btc["date"][0]))
 print("End date")
@@ -47,13 +49,7 @@ btc2.describe()
 #%%
 btc.dtypes
 
-#%%
-import sys
-sys.getsizeof(btc2)
-
 #%% View Data
-import matplotlib.pyplot as plt
-
 fig = plt.figure()
 
 axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
@@ -85,12 +81,8 @@ axes2.set_title('Last 30 Days');
 
 
 #%% GOOGLE TRENDS
-from pytrends.request import TrendReq
-
 pytrends = TrendReq(hl='en-US', tz=360)
 
-
-#%%
 kw_list = ["Blockchain", "BTC", "BitCoin"]
 pytrends.build_payload(kw_list)
 
@@ -117,8 +109,6 @@ pytrends.build_payload(["BitCoin"])
 tbitcoin = pytrends.interest_over_time()
 
 #%%
-import matplotlib.pyplot as plt
-
 fig = plt.figure()
 
 axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
