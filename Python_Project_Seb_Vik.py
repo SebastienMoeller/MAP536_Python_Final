@@ -78,9 +78,6 @@ axes2.set_title('Last 30 Days');
 
 
 
-
-
-
 #%% GOOGLE TRENDS
 pytrends = TrendReq(hl='en-US', tz=360)
 
@@ -139,7 +136,6 @@ axes2.set_title('Last 30 Days');
 
 
 
-
 #%% Does the daily change follow a normal distribution?
 closeDiff = pandas.DataFrame(numpy.diff(btc2["close"]))
 #%%
@@ -155,6 +151,46 @@ plt.hist(closeDiff[850:], bins = 30)
 #%%
 
 
+
+
+
+#%%
+closeDiff.pct_change
+#%%
+price = pandas.DataFrame(btc2["close"])
+#%%
+price["pct_change"] = price.close.pct_change()
+#%%
+price["log_return"] = numpy.log(price.close) - numpy.log(price.close.shift(1))
+#%%
+price["log_return"].plot()
+#%%
+price.describe()
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
+
+#%%
 
 #%%
 
