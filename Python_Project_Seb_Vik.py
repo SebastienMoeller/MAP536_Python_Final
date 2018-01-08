@@ -47,8 +47,8 @@ print(datetime.datetime.fromtimestamp(btc86400["date"][len(btc86400)-1]))
 # ["date"][(4+i)*12-2], i is the hour
 
 # Convert datetime from timestamp to a recognizable format
-#for i in range(len(btc300)):
-#   btc300["date"][i] = datetime.datetime.fromtimestamp(btc300["date"][i])
+for i in range(len(btc86400)):
+   btc86400["date"][i] = datetime.datetime.fromtimestamp(btc86400["date"][i])
 
 #%%
 btc300.columns
@@ -205,26 +205,39 @@ fig, ax = plt.subplots()
 candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low'][-30:],btc86400['close'][-30:],width=0.6)
 #%%
 
+
+
+
+
+
+#%%
+datetime.datetime.fromtimestamp(btc86400["date"][len(btc86400)-1-8])
+#%%
+data = btc86400
+#%%
+data["tBitCoin"] = btc86400["close"]
+data["tBTC"] = btc86400["close"]
+data["tBlockchain"] = btc86400["close"]
+
+day = datetime.datetime.now().day
+data = data[:-day]
+#%%
+#for i in range(4, len(data)+4):
+#    data["tBitCoin"][i-4] = tbitcoin["BitCoin"][int(109+(i/7))]
+#    data["tBTC"][i-4] = tbtc["BTC"][int(109+(i/7))]
+#    data["tBlockchain"][i-4] = tblockchain["Blockchain"][int(109+(i/7))]
+
+#%%
+#data.to_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
+#%%
+extra = pd.read_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
+extra = extra.drop('Unnamed: 0', 1)
 #%%
 
 #%%
-
+tbitcoin["BitCoin"]["2017-11-19"]
 #%%
-
-#%%
-
-#%%
-
-#%%
-
-#%%
-
-#%%
-
-#%%
-
-#%%
-
+btc86400["date"][0]
 #%%
 
 #%%
