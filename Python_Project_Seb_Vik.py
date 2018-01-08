@@ -200,29 +200,9 @@ price.describe()
 
 #%% Representing the data as daily japanese candles sticks
 
-# NOTHING WORKS!!! 
-
-
-import plotly.plotly as py
-import plotly.graph_objs as go
-
-trace = go.Candlestick(x=btc86400, open=btc86400['open'], high=btc86400['high'], low=btc86400['low'], 
-                       close=btc86400['close'],
-                       increasing=dict(line=dict(color= '#17BECF')),
-                       decreasing=dict(line=dict(color= '#7F7F7F')))
-                                                 
-data = [trace]
-
-fig = dict(data=data)
-py.iplot(fig, filename='styled_candlestick')
-#%%
-import pandas_datareader.data as web
-
-web.DataReader("aapl")
-#%%
-
-#%%
-
+from matplotlib.finance import candlestick2_ohlc
+fig, ax = plt.subplots()
+candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low'][-30:],btc86400['close'][-30:],width=0.6)
 #%%
 
 #%%
