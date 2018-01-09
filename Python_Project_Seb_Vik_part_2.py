@@ -24,7 +24,38 @@ data.set_index('date', inplace = True)
 #%%
 ##del extra['test']
 #%%
-plt.scatter(data['close'],data['tBlockchain'])
+
+
+
+#%%
+data.keys()
+
+#%%
+plt.scatter(data["close"], data["open"])
+
+#%%
+plt.scatter(data["close"], data["tBitCoin"])
+
+#%%
+plt.scatter(data["close"], data["tBTC"])
+
+#%%
+plt.scatter(data["close"], data["tBlockchain"])
+
+#%%
+plt.scatter(data["close"], data["high"])
+
+#%%
+plt.scatter(data["close"], data["low"])
+
+#%%
+plt.scatter(data["close"], data["quoteVolume"])
+
+#%%
+plt.scatter(data["close"], data["volume"])
+
+#%%
+plt.scatter(data["close"], data["weightedAverage"])
 
 
 #%%
