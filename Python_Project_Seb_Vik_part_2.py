@@ -195,7 +195,10 @@ def magic(n, x_data = x_data, x_test = x_test, y_data = y_data, y_test = y_test)
     y_model = polynomialModelN(n, param1, x_data)
     plt.scatter(x_data,y_data,label='Training Data')
     plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
-    plt.plot(x_data,y_model,label='Estimated', color = 'Red')
+    
+    smooth_x = np.linspace(0,max(x_data),1000)
+    
+    plt.plot(smooth_x,polynomialModelN(n, param1, smooth_x),label='Estimated', color = 'Red')
     plt.legend(loc='best', title='Series')
     plt.show()
 
@@ -212,9 +215,9 @@ def magic(n, x_data = x_data, x_test = x_test, y_data = y_data, y_test = y_test)
     return int(mseTrain), int(mseTest)
 
 #%%
-
+magic(4)
 #%%
-
+smooth_x = np.linspace(0,max(x_data),1000)
 #%%
 error = []
 for i in range(10):
