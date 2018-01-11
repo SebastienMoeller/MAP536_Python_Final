@@ -47,8 +47,8 @@ print(datetime.datetime.fromtimestamp(btc86400["date"][len(btc86400)-1]))
 # ["date"][(4+i)*12-2], i is the hour
 
 # Convert datetime from timestamp to a recognizable format
-for i in range(len(btc86400)):
-   btc86400["date"][i] = datetime.datetime.fromtimestamp(btc86400["date"][i])
+#for i in range(len(btc86400)):
+#   btc86400["date"][i] = datetime.datetime.fromtimestamp(btc86400["date"][i])
 
 #%%
 btc300.columns
