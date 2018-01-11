@@ -187,7 +187,10 @@ training_data = shuffled_data[:int(4 * N / 5)]
 ## Build testing set ##
 testing_data = shuffled_data[int(4 * N / 5):]
 
-
+#%%
+def meanSquareError(true, predicted):
+    delta = true - predicted
+    return sum(delta**2)/len(delta)
 #%%
 ## WE SEE HERE THAT IT KIND OF LOOKS LIKE A POLYNOMIAL FUNCTION. Degree 3?
 
@@ -224,7 +227,8 @@ print("Estimated parameters :", param1)
 
 print(meta_res)
 
-
+print("Training Error :", meanSquareError(y_data, polynomial_model(param1, x_data)))
+print("Testing Error :", meanSquareError(y_test, polynomial_model(param1, x_test)))
 #%%
 ## LET'S TRY WITH A DEGREE 2 POLYNOME
 
@@ -261,3 +265,18 @@ print("Initial parameters :", param0)
 print("Estimated parameters :", param1)
 
 print(meta_res)
+
+print("Training Error :", meanSquareError(y_data, polynomial_model(param1, x_data)))
+print("Testing Error :", meanSquareError(y_test, polynomial_model(param1, x_test)))
+#%%
+### Neural network training ###
+Classifier = nn.MLPClassifier(hidden_layer_sizes = (50), activation = 'relu', solver = 'lbfgs',  max_iter = 10000000)
+Classifier.fit(training_features, training_targets)
+
+#NOTA: Here we realized that with two layers we obtain way better scores for (10,50) than for (50,10)
+
+### Neural network testing ###
+score_train = Classifier.score(training_features, training_targets)
+score_test = Classifier.score(testing_features, testing_targets)
+print ('Score on the training set : ', score_train)
+print ('Score on the testing set : ', score_test)
