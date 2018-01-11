@@ -174,29 +174,90 @@ data.reset_index(inplace = True)
 N = len(data)
 
 randomized_indices = np.arange(N)
-# random.sample(randomized_indices, int(4 * N / 5))
 np.random.shuffle(randomized_indices)
-
-shuffled_data = data[randomized_indices] #dataset after index randomization
+ 
+#dataset after index randomization
+shuffled_data = data.iloc[randomized_indices,:] 
 
 ### Split the dataset into two subsets ###
 
 ## Build training set ##
-#training_data = data.sample(int(4 * N / 5), replace = 'True')
+training_data = shuffled_data[:int(4 * N / 5)]
 
 ## Build testing set ##
-#testing_data = data.drop(training_data.index, axis = 0)
+testing_data = shuffled_data[int(4 * N / 5):]
 
 
 #%%
-### Neural network training ###
-Classifier = nn.MLPClassifier(hidden_layer_sizes = (50), activation = 'relu', solver = 'lbfgs',  max_iter = 10000000)
-Classifier.fit(training_features, training_targets)
+## WE SEE HERE THAT IT KIND OF LOOKS LIKE A POLYNOMIAL FUNCTION. Degree 3?
 
-#NOTA: Here we realized that with two layers we obtain way better scores for (10,50) than for (50,10)
+## Let's define these functions:
 
-### Neural network testing ###
-score_train = Classifier.score(training_features, training_targets)
-score_test = Classifier.score(testing_features, testing_targets)
-print ('Score on the training set : ', score_train)
-print ('Score on the testing set : ', score_test)
+def polynomial_model(param, x):
+    return param[0] + param[1]*x + param[2]*x**2 + param[3]*x**3
+
+def polynomial_err(param, x, y):
+    return y - polynomial_model(param, x)
+
+#%%
+x_data = training_data['tBlockchain'] 
+y_data = training_data['close']   
+
+x_test = testing_data['tBlockchain'] 
+y_test = testing_data['close']
+
+param0 = [1, 1, 1, 1] ## Initialisation of the iterations
+
+param1, meta_res = scipy.optimize.leastsq(polynomial_err, param0[:], args = (x_data, y_data))
+#%%
+#data = data.sort_values('tBlockchain', ascending=True)
+
+y_model = polynomial_model(param1, x_data) 
+plt.scatter(x_data,y_data,label='Training Data')
+plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
+plt.scatter(x_data,y_model,label='Estimated', color = 'Red')
+plt.legend(loc='best', title='Series')
+plt.show()
+
+print("Initial parameters :", param0)
+print("Estimated parameters :", param1)
+
+print(meta_res)
+
+
+#%%
+## LET'S TRY WITH A DEGREE 2 POLYNOME
+
+## Let's define these functions:
+
+def polynomial_model(param, x):
+    return param[0] + param[1]*x + param[2]*x**2
+
+def polynomial_err(param, x, y):
+    return y - polynomial_model(param, x)
+
+#%%
+x_data = training_data['tBlockchain'] 
+y_data = training_data['close']   
+
+x_test = testing_data['tBlockchain'] 
+y_test = testing_data['close']
+
+param0 = [1, 1, 1] ## Initialisation of the iterations
+
+param1, meta_res = scipy.optimize.leastsq(polynomial_err, param0[:], args = (x_data, y_data))
+
+#%%
+#data = data.sort_values('tBlockchain', ascending=True)
+
+y_model = polynomial_model(param1, x_data) 
+plt.scatter(x_data,y_data,label='Training Data')
+plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
+plt.scatter(x_data,y_model,label='Estimated', color = 'Red')
+plt.legend(loc='best', title='Series')
+plt.show()
+
+print("Initial parameters :", param0)
+print("Estimated parameters :", param1)
+
+print(meta_res)
