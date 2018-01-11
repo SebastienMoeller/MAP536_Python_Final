@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import datetime
 from pytrends.request import TrendReq
 import numpy as np
-
+from matplotlib.finance import candlestick2_ohlc
 #%% Importing from API
 # To import poloniex we need to install the package in the console using:
 # pip install poloniex
@@ -199,8 +199,6 @@ price.describe()
 
 
 #%% Representing the data as daily japanese candles sticks
-
-from matplotlib.finance import candlestick2_ohlc
 fig, ax = plt.subplots()
 candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low'][-30:],btc86400['close'][-30:],width=0.6)
 #%%
@@ -228,18 +226,17 @@ data = data[:-day]
 #    data["tBlockchain"][i-4] = tblockchain["Blockchain"][int(109+(i/7))]
 
 #%%
+data["delta"] = data["open"] - data["close"]
+
+#%%
 #data.to_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
 #%%
-extra = pd.read_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
-extra = extra.drop('Unnamed: 0', 1)
+data = pd.read_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
+data = data.drop('Unnamed: 0', 1)
 #%%
 
 #%%
-tbitcoin["BitCoin"]["2017-11-19"]
-#%%
-btc86400["date"][0]
-#%%
-
+data["delta"] = data["open"] - data["close"]
 #%%
 
 #%%
