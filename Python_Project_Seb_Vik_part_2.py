@@ -124,43 +124,32 @@ print("Initial parameters :", param0)
 print("Estimated parameters :", param1)
 
 print(meta_res)
+#%%
+
+
+
+
+
+
+
+
+
 
 
 
 #%%
-## LET'S TRY WITH A DEGREE 2 POLYNOME
+def meanSquareError(true, predicted):
+    delta = true - predicted
+    return sum(delta**2)/len(delta)
 
-## Let's define these functions:
+def polynomialModelN(n, param, x):
+    temp = 0
+    for i in range(n):
+        temp = temp + param[i]*x**(i)
+    return temp
 
-def polynomial_model(param, x):
-    return param[0] + param[1]*x + param[2]*x**2
-
-def polynomial_err(param, x, y):
-    return y - polynomial_model(param, x)
-
-#%%
-x_data = data['tBlockchain'] 
-y_data = data['close']   
-
-param0 = [1, 1, 1] ## Initialisation of the iterations
-
-param1, meta_res = scipy.optimize.leastsq(polynomial_err, param0[:], args = (x_data, y_data))
-#%%
-y_model = polynomial_model(param1, x_data) 
-plt.scatter(x_data,y_data,label='Data')
-plt.plot(x_data,y_model,label='Estimated', color = 'Red')
-plt.legend(loc='best', title='Series')
-plt.show()
-
-print("Initial parameters :", param0)
-print("Estimated parameters :", param1)
-
-print(meta_res)
-
-
-
-
-
+def polynomialError(param, x, y):
+    return y - polynomialModelN(len(param), param, x)
 #%%
 
 # WE SEE THAT MAYBE DEGREE THREE FITS BETTER THAN DEGREE 2. HOWEVER, THIS IS NORMAL: THE ERROR WILL ALWAYS DECREASE WITH MORE COMPLEX MODEL
@@ -188,95 +177,50 @@ training_data = shuffled_data[:int(4 * N / 5)]
 testing_data = shuffled_data[int(4 * N / 5):]
 
 #%%
-def meanSquareError(true, predicted):
-    delta = true - predicted
-    return sum(delta**2)/len(delta)
-#%%
-## WE SEE HERE THAT IT KIND OF LOOKS LIKE A POLYNOMIAL FUNCTION. Degree 3?
+training_data = training_data.sort_values('volume', ascending=True)    
+testing_data = testing_data.sort_values('volume', ascending=True)  
 
-## Let's define these functions:
-
-def polynomial_model(param, x):
-    return param[0] + param[1]*x + param[2]*x**2 + param[3]*x**3
-
-def polynomial_err(param, x, y):
-    return y - polynomial_model(param, x)
-
-#%%
-x_data = training_data['tBlockchain'] 
+x_data = training_data['volume'] 
 y_data = training_data['close']   
 
-x_test = testing_data['tBlockchain'] 
+x_test = testing_data['volume'] 
 y_test = testing_data['close']
 
-param0 = [1, 1, 1, 1] ## Initialisation of the iterations
-
-param1, meta_res = scipy.optimize.leastsq(polynomial_err, param0[:], args = (x_data, y_data))
 #%%
-#data = data.sort_values('tBlockchain', ascending=True)
+def magic(n, x_data = x_data, x_test = x_test, y_data = y_data, y_test = y_test):
+    n = n+1
+    param0 = np.ones(n)
+    param1, meta_res = scipy.optimize.leastsq(polynomialError, param0[:], args = (x_data, y_data))
+    
+    y_model = polynomialModelN(n, param1, x_data)
+    plt.scatter(x_data,y_data,label='Training Data')
+    plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
+    plt.plot(x_data,y_model,label='Estimated', color = 'Red')
+    plt.legend(loc='best', title='Series')
+    plt.show()
 
-y_model = polynomial_model(param1, x_data) 
-plt.scatter(x_data,y_data,label='Training Data')
-plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
-plt.scatter(x_data,y_model,label='Estimated', color = 'Red')
-plt.legend(loc='best', title='Series')
-plt.show()
+    #print("Initial parameters :", param0)
+    #print("Estimated parameters :", param1)
 
-print("Initial parameters :", param0)
-print("Estimated parameters :", param1)
-
-print(meta_res)
-
-print("Training Error :", meanSquareError(y_data, polynomial_model(param1, x_data)))
-print("Testing Error :", meanSquareError(y_test, polynomial_model(param1, x_test)))
-#%%
-## LET'S TRY WITH A DEGREE 2 POLYNOME
-
-## Let's define these functions:
-
-def polynomial_model(param, x):
-    return param[0] + param[1]*x + param[2]*x**2
-
-def polynomial_err(param, x, y):
-    return y - polynomial_model(param, x)
+    #print(meta_res)
+    
+    mseTrain = meanSquareError(y_data, polynomialModelN(n, param1, x_data))
+    mseTest = meanSquareError(y_test, polynomialModelN(n, param1, x_test))
+    
+    #print("Training Error :", mseTrain)
+    #print("Testing Error :", mseTest)
+    return int(mseTrain), int(mseTest)
 
 #%%
-x_data = training_data['tBlockchain'] 
-y_data = training_data['close']   
-
-x_test = testing_data['tBlockchain'] 
-y_test = testing_data['close']
-
-param0 = [1, 1, 1] ## Initialisation of the iterations
-
-param1, meta_res = scipy.optimize.leastsq(polynomial_err, param0[:], args = (x_data, y_data))
 
 #%%
-#data = data.sort_values('tBlockchain', ascending=True)
 
-y_model = polynomial_model(param1, x_data) 
-plt.scatter(x_data,y_data,label='Training Data')
-plt.scatter(x_test,y_test,label='Testing Data', color = 'Green' )
-plt.scatter(x_data,y_model,label='Estimated', color = 'Red')
-plt.legend(loc='best', title='Series')
-plt.show()
-
-print("Initial parameters :", param0)
-print("Estimated parameters :", param1)
-
-print(meta_res)
-
-print("Training Error :", meanSquareError(y_data, polynomial_model(param1, x_data)))
-print("Testing Error :", meanSquareError(y_test, polynomial_model(param1, x_test)))
 #%%
-### Neural network training ###
-Classifier = nn.MLPClassifier(hidden_layer_sizes = (50), activation = 'relu', solver = 'lbfgs',  max_iter = 10000000)
-Classifier.fit(training_features, training_targets)
+error = []
+for i in range(10):
+    error.append(magic(i+1))
+error
 
-#NOTA: Here we realized that with two layers we obtain way better scores for (10,50) than for (50,10)
+plt.plot(error)
+#%%
 
-### Neural network testing ###
-score_train = Classifier.score(training_features, training_targets)
-score_test = Classifier.score(testing_features, testing_targets)
-print ('Score on the training set : ', score_train)
-print ('Score on the testing set : ', score_test)
