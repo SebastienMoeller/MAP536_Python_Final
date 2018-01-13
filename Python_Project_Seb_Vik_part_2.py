@@ -56,6 +56,10 @@ plt.scatter(data["close"], data["volume"])
 
 #%%
 plt.scatter(data["close"], data["weightedAverage"])
+#%%
+
+
+
 
 
 #%%
@@ -129,13 +133,6 @@ print(meta_res)
 
 
 
-
-
-
-
-
-
-
 #%%
 def meanSquareError(true, predicted):
     delta = true - predicted
@@ -175,8 +172,6 @@ def shuff(data, ratio = 0.3):
     testing_data = shuffled_data[int((1-ratio)*N):]
     
     return training_data, testing_data
-#%%
-
 #%%
 training_data, testing_data = shuff(data)
 
@@ -226,20 +221,7 @@ def trainTestError(n):
     
     return error
 #%%
-
-#%%
 trainTestError(10)
-
 #%%
 #Here we see that the testing error changes a lot according to the "shuffle" of the data, and changes the optimal degree of the polynome.
 #It would thus be clever to run a large nu;ber of simulations to find the "real" optimum (Monte Carlo simulation?) 
-
-
-
-
-
-
-
-
-
-
