@@ -6,6 +6,7 @@ Created on Tue Jan  9 22:35:17 2018
 """
 #%% All libraries
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
@@ -45,7 +46,8 @@ def logReg(X, y, test_ratio = 0.2):
     model = logm.fit(X_train, y_train)
     predictions = logm.predict(X_test)
     
-    print("Confusion Matrix: ", confusion_matrix(y_test, predictions))
+    print("Confusion Matrix:") 
+    print(confusion_matrix(y_test, predictions))
     print("Model Score: ", model.score(X_test, y_test))
     
     return model
@@ -107,7 +109,6 @@ test = linReg(X, y)
 #%%
 
 #%% Logistic Regression: Predict price increase or decrease
-import numpy as np
 y = np.sign(data['delta'])
 y = [1 if y>=0 else 0 for y in y]
 
@@ -137,42 +138,3 @@ test = logReg(X, y)
 #%%
 
 #%%
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
