@@ -49,62 +49,41 @@ print(datetime.datetime.fromtimestamp(btc86400["date"][len(btc86400)-1]))
 # Convert datetime from timestamp to a recognizable format
 #for i in range(len(btc86400)):
 #   btc86400["date"][i] = datetime.datetime.fromtimestamp(btc86400["date"][i])
-
 #%%
 btc300.columns
-
 #%%
 btc300.describe()
-
 #%%
 btc300.dtypes
-
-#%% View Data 5 minutes
-fig = plt.figure()
-
-axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
-axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
-
-# main figure
-axes1.plot(btc300["date"], btc300["volume"]/btc300["volume"].max(), "#0CC88F")
-axes1.plot(btc300["date"], btc300["close"]/btc300["close"].max(), '#EBA911')
-
-axes1.legend(loc=2)
-axes1.set_xlabel('date')
-axes1.set_ylabel('Max')
-axes1.set_title('Last Three Years')
-
-# insert
-axes2.plot(btc300["date"][-30*12*24:], btc300["volume"][-30*12*24:]/btc300["volume"][-30*12*24:].max(), '#0CC88F')
-axes2.plot(btc300["date"][-30*12*24:], btc300["close"][-30*12*24:]/btc300["close"][-30*12*24:].max(), '#EBA911')
-
-axes2.set_xlabel('date')
-axes2.set_ylabel('Max')
-axes2.set_title('Last 30 Days');
 #%%
+def multiPlot(data, x, y, factor):
+    fig = plt.figure()
+    
+    axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
+    axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
 
-#%% View Data daily
-fig = plt.figure()
+    # main figure
+    for i in range(len(y)):
+        axes1.plot(data[x], data[y[i]]/data[y[i]].max())
 
-axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
-axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
+    axes1.legend(loc=2)
+    axes1.set_xlabel(x)
+    axes1.set_ylabel('Max')
 
-# main figure
-axes1.plot(btc86400["date"], btc86400["volume"]/btc86400["volume"].max(), "#0CC88F")
-axes1.plot(btc86400["date"], btc86400["close"]/btc86400["close"].max(), '#EBA911')
+    # insert
+    for i in range(len(y)):
+        axes2.plot(data[x][-30*factor:], data[y[i]][-30*factor:]/data[y[i]][-30*factor:].max())
 
-axes1.legend(loc=2)
-axes1.set_xlabel('date')
-axes1.set_ylabel('Max')
-axes1.set_title('Last Three Years')
-
-# insert
-axes2.plot(btc86400["date"][-30:], btc86400["volume"][-30:]/btc86400["volume"][-30:].max(), '#0CC88F')
-axes2.plot(btc86400["date"][-30:], btc86400["close"][-30:]/btc86400["close"][-30:].max(), '#EBA911')
-
-axes2.set_xlabel('date')
-axes2.set_ylabel('Max')
-axes2.set_title('Last 30 Days');
+    axes2.set_xlabel(x)
+    axes2.set_ylabel('Max');
+#%%
+# View Data 5 minutes
+multiPlot(btc300, 'date', ('volume','close'), 12*24)
+# View Data daily
+multiPlot(btc86400, 'date', ('volume','close'), 1)
+#%% Representing the data as daily japanese candles sticks
+fig, ax = plt.subplots()
+candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low'][-30:],btc86400['close'][-30:],width=0.6)
 #%%
 
 
@@ -125,38 +104,30 @@ trends.describe()
 #%%
 trends.dtypes
 #%%
-pytrends = TrendReq(hl='en-US', tz=360)
 
-pytrends.build_payload(["Blockchain"])
-tblockchain = pytrends.interest_over_time()
-pytrends.build_payload(["BTC"])
-tbtc = pytrends.interest_over_time()
-pytrends.build_payload(["BitCoin"])
-tbitcoin = pytrends.interest_over_time()
+
+
+
+
+#%% Function to retrieve trends with maximum available accuracy from Google, of a list of 
+# terms to look up, concatenated into one matrix containing a date column
+def payload(strings):
+    pytrends = TrendReq(hl='en-US', tz=360)
+    
+    trend = []
+    
+    for i in range(len(strings)):
+        pytrends.build_payload([strings[i]])
+        trend.append(pytrends.interest_over_time().drop('isPartial', axis = 1))
+    
+    trend = pd.concat(trend, axis = 1)
+    trend.reset_index(inplace = True)
+    return trend
+#%% Reconstruct trends but with more accuracy
+terms = ('Blockchain', 'BTC', 'BitCoin')
+trends = payload(terms)
 #%%
-fig = plt.figure()
-
-axes1 = fig.add_axes([0.05, 0.2, 1.2, 0.8]) # main axes
-axes2 = fig.add_axes([0.2, 0.5, 0.6, 0.3]) # inset axes
-
-# main figure
-axes1.plot(tbitcoin["BitCoin"]/tbitcoin["BitCoin"].max())
-axes1.plot(tblockchain["Blockchain"]/tblockchain["Blockchain"].max())
-axes1.plot(tbtc["BTC"]/tbtc["BTC"].max())
-
-axes1.legend(loc=2)
-axes1.set_xlabel('date')
-axes1.set_ylabel('Max')
-axes1.set_title('Last Five Years')
-
-# insert
-axes2.plot(tbitcoin["BitCoin"][-30:]/tbitcoin["BitCoin"][-30:].max())
-axes2.plot(tblockchain["Blockchain"][-30:]/tblockchain["Blockchain"][-30:].max())
-axes2.plot(tbtc["BTC"][-30:]/tbtc["BTC"][-30:].max())
-
-axes2.set_xlabel('date')
-axes2.set_ylabel('Max')
-axes2.set_title('Last 30 Days');
+multiPlot(trends, 'date', terms, 1)
 #%%
 
 
@@ -183,13 +154,9 @@ plt.hist(closeDiff[850:], bins = 30)
 
 #%%
 price = pd.DataFrame(btc86400["close"])
-#%%
 price["pct_change"] = price.close.pct_change()
-#%%
 price["log_return"] = np.log(price.close) - np.log(price.close.shift(1))
-#%%
 price["log_return"].plot()
-#%%
 price.describe()
 #%%
 
@@ -198,9 +165,7 @@ price.describe()
 
 
 
-#%% Representing the data as daily japanese candles sticks
-fig, ax = plt.subplots()
-candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low'][-30:],btc86400['close'][-30:],width=0.6)
+
 #%%
 
 
@@ -212,22 +177,21 @@ candlestick2_ohlc(ax,btc86400['open'][-30:],btc86400['high'][-30:],btc86400['low
 datetime.datetime.fromtimestamp(btc86400["date"][len(btc86400)-1-8])
 #%%
 data = btc86400
-#%%
+#%% # dummy filler of correct length
 data["tBitCoin"] = btc86400["close"]
 data["tBTC"] = btc86400["close"]
 data["tBlockchain"] = btc86400["close"]
 
 day = datetime.datetime.now().day
 data = data[:-day]
-#%%
-#for i in range(4, len(data)+4):
-#    data["tBitCoin"][i-4] = tbitcoin["BitCoin"][int(109+(i/7))]
-#    data["tBTC"][i-4] = tbtc["BTC"][int(109+(i/7))]
-#    data["tBlockchain"][i-4] = tblockchain["Blockchain"][int(109+(i/7))]
+#%% Trends are weekly so they are repeated 7 times in the daily data
+for i in range(4, len(data)+4):
+    data["tBitCoin"][i-4] = trends["BitCoin"][int(109+(i/7))]
+    data["tBTC"][i-4] = trends["BTC"][int(109+(i/7))]
+    data["tBlockchain"][i-4] = trends["Blockchain"][int(109+(i/7))]
 
 #%%
 data["delta"] = data["open"] - data["close"]
-
 #%%
 #data.to_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
 #%%
@@ -236,7 +200,7 @@ data = data.drop('Unnamed: 0', 1)
 #%%
 
 #%%
-data["delta"] = data["open"] - data["close"]
+
 #%%
 
 #%%
