@@ -12,13 +12,14 @@ from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 #%% 
-data = pd.read_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
+#data = pd.read_csv("C:\\Users\\Sebastien\\Desktop\\MAP536_Python_Final-master\\data.csv")
+data = pd.read_csv("/Users/Sebastien/Documents/Documents/University/Polytechnique & HEC/Year 1/MAP536 R Python/Final Project/data.csv")
 #data = data.drop('Unnamed: 0', 1)
 
 del data['test']
 del data['Unnamed: 0']
 data.set_index('date', inplace = True)
-
+#%%
 def meanSquareError(true, predicted):
     delta = true - predicted
     return sum(delta**2)/len(delta)
@@ -59,43 +60,27 @@ y = data['close']
 X = data[['tBitCoin', 'tBTC','tBlockchain']]
 
 test = linReg(X, y)
-#%%
-
 #%% Predict close price using all available information
 y = data['close']
 X = data[data.columns.difference(['delta', 'close'])]
 
 test = linReg(X, y)
-#%%
-
 #%% Predict close price using all available information without open price
 y = data['close']
-X = data[data.columns.difference(['delta', 'close', 'open'])]
+X = data[data.columns.difference(['delta', 'close', 'open', 'logReturn'])]
 
 test = linReg(X, y)
-#%%
-
 #%% Predict close price using all available information without open price
 y = data['close']
-X = data[data.columns.difference(['delta', 'close', 'open', 'weightedAverage'])]
+X = data[data.columns.difference(['delta', 'close', 'open', 'weightedAverage', 'logReturn'])]
 
 test = linReg(X, y)
-
-#%%
-
 #%%
 y = data['close']
-X = data[data.columns.difference(['delta', 'close', 'open', 'weightedAverage', 'high', 'low', 'volume'])]
+X = data[data.columns.difference(['delta', 'close', 'open', 'weightedAverage', 'high', 'low', 'volume', 'logReturn'])]
 
 test = linReg(X, y)
 #%%
-
-
-
-
-
-
-
 
 
 
@@ -103,21 +88,33 @@ test = linReg(X, y)
 
 #%% Lets try to predict the delta instead
 y = data['delta']
-X = data[data.columns.difference(['delta', 'close', 'open'])]
+X = data[data.columns.difference(['delta', 'close', 'open', 'logReturn'])]
 
 test = linReg(X, y)
 #%%
 
+
+
+
+
 #%% Logistic Regression: Predict price increase or decrease
 y = np.sign(data['delta'])
 y = [1 if y>=0 else 0 for y in y]
+X = data[data.columns.difference(['delta', 'close', 'open', 'logReturn'])]
 
 test = logReg(X, y)
 #%%
 
-#%%
 
-#%%
+
+
+
+#%% Lets try the logarithmic returns instead
+
+y = data['logReturn'][1:]
+X = data[data.columns.difference(['delta', 'close', 'open', 'logReturn'])][1:]
+
+test = linReg(X, y)
 
 #%%
 
